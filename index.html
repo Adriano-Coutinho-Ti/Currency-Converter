@@ -12,47 +12,49 @@
     <script src="./assets/js/script.js"></script>
     <title>JavaScript Training Currency Converter</title>
 </head>
-<img src="./assets/img/logo.png" alt="logo-convert-money">
-
-<main>
-    <label for="">
-        Converter <b>de</b>
-        <select name="" id="">
-            <option value="BRL">R$: Real Brasileiro</option>
-        </select>
-    </label>
-
-    <label for="">
-        Converter <b>para</b>
-        <select name="" id="">
-            <option value="USB">US$: Dórlar Americano</option>
-            <option value="EUR">€: Euro</option>
-        </select>
-    </label>
-
-    <label for="">
-        Valor
-        <input type="text" placeholder="R$: 10.000,00" />
-    </label>
-
-    <button>Converter</button>
-
-    <section>
-        <div>
-            <img src="./assets/img/brasil.png" alt="base-currency-logo">
-            <p>Real</p>
-            <p>R$: 0,00</p>
-        </div>
-        <img src="./assets/img/Vector.png" alt="turning-arrow">
-        <div>
-            <img src="./assets/img/estados-unidos.png" alt="converted-currency-logo">
-            <p>Dólar</p>
-            <p>US$: 0,00</p>
-        </div>
-    </section>
-</main>
 
 <body>
+    <img class="logo" src="./assets/img/logo.gif" alt="logo-convert-money">
+
+    <main>
+        <label for="">
+            Converter <b>de</b>
+            <select name="" id="">
+                <option value="BRL">R$ Real Brasileiro</option>
+            </select>
+        </label>
+
+        <label for="">
+            Converter <b>para</b>
+            <select name="" id="">
+                <option value="USB">US$ Dórlar Americano</option>
+                <option value="EUR">€ Euro</option>
+            </select>
+        </label>
+
+        <label for="">
+            Valor
+            <input type="text" placeholder="R$: 10.000,00" />
+        </label>
+
+        <button>Converter</button>
+
+        <section>
+            <div class="currency-box">
+                <img src="./assets/img/brasil.png" alt="base-currency-logo">
+                <p class="currency">Real</p>
+                <p class="currency-value">R$: 0,00</p>
+            </div>
+
+            <img class="arrow-img" src="./assets/img/Vector.png" alt="turning-arrow">
+
+            <div class="currency-box">
+                <img src="./assets/img/estados-unidos.png" alt="converted-currency-logo">
+                <p class="currency">Dólar Americano</p>
+                <p class="currency-value">US$: 0,00</p>
+                </div>
+        </section>
+    </main>
 
 </body>
 
