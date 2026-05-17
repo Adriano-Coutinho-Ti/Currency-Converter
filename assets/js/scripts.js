@@ -10,30 +10,77 @@ let libraToday = 0.00;
 let bitcoinToday = 0.00;
 let realToday = 1.00;
 
+function formatInputAsValueClean() {
+    inputCurrency.value = "";
+}
 
 function formatInputAsValue(event) {
     let value = event.target.value;
 
-    // 1. Remove tudo o que não for número (letras, símbolos, etc)
+    // Remove tudo o que não for número (letras, símbolos, etc)
     value = value.replace(/\D/g, "");
 
-    // 2. Transforma em centavos (ex: se digitou 150, vira 1.50)
-    value = (value / 100).toFixed(2);
+    if (currencySelect1.value == "BTC") {
+        // Transforma em centavos com 6 digitos
+        value = (value / 100000000).toFixed(8);
+    } else {
+        // Transforma em centavos (ex: se digitou 150, vira 1.50)
+        value = (value / 100).toFixed(2);
+    }
+    
 
-    // 3. Se não for um número válido (ex: campo vazio), limpa o input e para
+    // Se não for um número válido (ex: campo vazio), limpa o input e para
     if (isNaN(value) || value == 0) {
         event.target.value = "";
         return;
     }
 
-    // 4. Formata o número limpo para o padrão de moeda Real
-    const valorFormatado = new Intl.NumberFormat("pt-BR", {
-        style: "currency",
-        currency: "BRL"
-    }).format(value);
+    // Formata o número limpo para o padrão de moeda selecionado
+    if (currencySelect1.value == "BRL") {
+            const valorFormatado = new Intl.NumberFormat("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        }).format(value);
+        // Atualiza o texto visual dentro do próprio input!
+        event.target.value = valorFormatado;
+    }
 
-    // 5. Atualiza o texto visual dentro do próprio input!
-    event.target.value = valorFormatado;
+    if (currencySelect1.value == "USD") {
+            const valorFormatado = new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD"
+        }).format(value);
+        // Atualiza o texto visual dentro do próprio input!
+        event.target.value = valorFormatado;
+    }
+
+    if (currencySelect1.value == "EUR") {
+            const valorFormatado = new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "EUR"
+        }).format(value);
+        // Atualiza o texto visual dentro do próprio input!
+        event.target.value = valorFormatado;
+    }
+
+    if (currencySelect1.value == "GBP") {
+            const valorFormatado = new Intl.NumberFormat("en-GB", {
+            style: "currency",
+            currency: "GBP"
+        }).format(value);
+        // Atualiza o texto visual dentro do próprio input!
+        event.target.value = valorFormatado;
+    }
+
+    if (currencySelect1.value == "BTC") {
+            const valorFormatado = new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "XBT",
+            minimumFractionDigits: 8      
+        }).format(value);
+        // Atualiza o texto visual dentro do próprio input!
+        event.target.value = valorFormatado;
+    }
 
 }
 
@@ -42,8 +89,22 @@ function getInputValueAsNumber() {
     let value = inputCurrency.value;
     if (!value) return 0;
 
-    // Remove o "R$", remove os pontos de milhar e troca a vírgula decimal por ponto
-    value = value.replace("R$", "").replace(/\./g, "").replace(",", ".").trim();
+    // 1. Remove os símbolos (como você já fez)
+    value = value.replace(/[^0-9.,]/g, "");
+
+    // 2. DESCUBRA O PADRÃO: Se o ponto estiver mais perto do fim do que a vírgula, 
+    // ou se só existi ponto e nenhuma vírgula, significa que é o padrão americano (Ex: 1,000.50 ou 10.00)
+    const ultimoPonto = value.lastIndexOf('.');
+    const ultimaVirgula = value.lastIndexOf(',');
+
+    if (ultimoPonto > ultimaVirgula) {
+        // Se for padrão americano: apaga a vírgula (milhar) e mantém o ponto (decimal)
+        value = value.replace(/,/g, "");
+    } else {
+        // Se for padrão brasileiro (Ex: 1.000,50 ou 10,00): apaga o ponto e troca a vírgula por ponto
+        value = value.replace(/\./g, "").replace(",", ".");
+    }
+
     return parseFloat(value) || 0;
 }
 
@@ -72,6 +133,34 @@ async function convertValues() {
         const inputCurrencyValue = getInputValueAsNumber();
         const currencyValueToConvert = document.querySelector(".currency-value-to-convert")
         const currencyValueConverted = document.querySelector(".currency-value")
+        
+        let valueToday = 0
+
+        function valueTodayCorrency() {
+
+            if (currencySelect1.value == "USD") {
+            valueToday = parseFloat(dolarToday.toFixed(4)); 
+            console.log(valueToday)     
+            }
+            if (currencySelect1.value == "EUR") {
+            valueToday = parseFloat(euroToday.toFixed(5));
+            console.log(valueToday) 
+            }
+            if (currencySelect1.value == "GBP") {
+            valueToday = parseFloat(libraToday.toFixed(5));
+            console.log(valueToday) 
+            }
+            if (currencySelect1.value == "BTC") {
+            valueToday = parseFloat(bitcoinToday.toFixed(8));
+            console.log(valueToday) 
+            }
+            if (currencySelect1.value == "BRL") {
+            valueToday = parseFloat(realToday.toFixed(2));
+            console.log(valueToday) 
+            }
+        
+            
+        }
 
         /*currencyValueToConvert.innerHTML = new Intl.NumberFormat("pt-BR", {
             style: "currency",
@@ -79,75 +168,69 @@ async function convertValues() {
         }).format(inputCurrencyValue)*/
 
         if (currencySelect1.value == "USD") {
-            currencyValueToConvert.innerHTML = new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD"
-            }).format(inputCurrencyValue / dolarToday)
+            currencyValueToConvert.innerHTML = inputCurrency.value || "$0,00";
+            valueTodayCorrency() 
         }
         
         if (currencySelect.value == "USD") {
+            valueTodayCorrency() 
             currencyValueConverted.innerHTML = new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD"
-            }).format(inputCurrencyValue / dolarToday)
+            }).format(inputCurrencyValue * valueToday / dolarToday)
         }
 
         if (currencySelect1.value == "EUR") {
-            currencyValueToConvert.innerHTML = new Intl.NumberFormat("de-DE", {
-                style: "currency",
-                currency: "EUR"
-            }).format(inputCurrencyValue / euroToday)
+            currencyValueToConvert.innerHTML = inputCurrency.value || "€0,00";
+            valueTodayCorrency() 
         }
 
         if (currencySelect.value == "EUR") {
+            valueTodayCorrency() 
             currencyValueConverted.innerHTML = new Intl.NumberFormat("de-DE", {
                 style: "currency",
                 currency: "EUR"
-            }).format(inputCurrencyValue / euroToday)
+            }).format(inputCurrencyValue * valueToday / euroToday)
         }
 
         if (currencySelect1.value == "GBP") {
-            currencyValueToConvert.innerHTML = new Intl.NumberFormat("en-GB", {
-                style: "currency",
-                currency: "GBP"
-            }).format(inputCurrencyValue / libraToday);
+            currencyValueToConvert.innerHTML = inputCurrency.value || "£0.00";
+            valueTodayCorrency() 
         }
 
         if (currencySelect.value == "GBP") {
+            valueTodayCorrency() 
             currencyValueConverted.innerHTML = new Intl.NumberFormat("en-GB", {
                 style: "currency",
                 currency: "GBP"
-            }).format(inputCurrencyValue / libraToday);
+            }).format(inputCurrencyValue * valueToday / libraToday);
         }
 
         if (currencySelect1.value == "BTC") {
-            currencyValueToConvert.innerHTML = new Intl.NumberFormat("de-DE", {
-                style: "currency",
-                currency: "XBT",
-                minimumFractionDigits: 6
-            }).format(inputCurrencyValue / bitcoinToday);
+            currencyValueToConvert.innerHTML =  inputCurrency.value || "XBT0,00000000";
+            valueTodayCorrency() 
         }
 
         if (currencySelect.value == "BTC") {
+            valueTodayCorrency() 
             currencyValueConverted.innerHTML = new Intl.NumberFormat("de-DE", {
                 style: "currency",
                 currency: "XBT",
-                minimumFractionDigits: 6
-            }).format(inputCurrencyValue / bitcoinToday);
-        }
-
-        if (currencySelect.value == "BRL") {
-            currencyValueConverted.innerHTML = new Intl.NumberFormat("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-            }).format(inputCurrencyValue / realToday);
+                minimumFractionDigits: 8
+            }).format(inputCurrencyValue * valueToday / bitcoinToday);
         }
 
         if (currencySelect1.value == "BRL") {
-            currencyValueToConvert.innerHTML = new Intl.NumberFormat("pt-BR", {
+            valueTodayCorrency() 
+            currencyValueToConvert.innerHTML = inputCurrency.value || "R$ 0,00";
+        }
+
+        if (currencySelect.value == "BRL") {
+            valueTodayCorrency() 
+            currencyValueConverted.innerHTML = new Intl.NumberFormat("pt-BR", {
                 style: "currency",
                 currency: "BRL",
-            }).format(inputCurrencyValue / realToday);
+            }).format(inputCurrencyValue * valueToday / realToday);
         }
 
     } catch (erro) {
@@ -163,12 +246,13 @@ function changeCurrency() {
     const currencyImage = document.querySelector(".currency-img")
 
 
-    // Criamos o formatador para a moeda Real (R$)
+    // Criamos o formatador para a moeda de entrada
     const formatarReal = new Intl.NumberFormat("pt-BR", {
         style: "currency",
         currency: "BRL"
     });
 
+    //Agora vamos editar as informações na tela
 
     if (currencySelect.value == "USD") {
         
@@ -235,6 +319,7 @@ function changeCurrency() {
 }
 
 inputCurrency.addEventListener("input", formatInputAsValue)
+currencySelect1.addEventListener("change", formatInputAsValueClean)
 currencySelect1.addEventListener("change", convertValues)
 currencySelect.addEventListener("change", convertValues)
 convertButton.addEventListener("click", convertValues)
