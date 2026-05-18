@@ -3,15 +3,79 @@ const currencySelect1 = document.querySelector(".currency-select1")
 const currencySelect = document.querySelector(".currency-select2")
 const inputCurrency = document.querySelector(".input-currency")
 
-
 let dolarToday = 0.00;
 let euroToday = 0.00;
 let libraToday = 0.00;
 let bitcoinToday = 0.00;
 let realToday = 1.00;
 
+let outputValue = 0.00
+let cashCalue = 0.00
+
+function comparisonValue() {
+    if (currencySelect1.value == "BRL") {
+        cashCalue = new Intl.NumberFormat("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+        }).format(outputValue/realToday);
+    }
+
+    if (currencySelect1.value == "USD") {
+        cashCalue = new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: "USD",
+        }).format(outputValue/dolarToday);
+    }
+
+    if (currencySelect1.value == "EUR") {
+        cashCalue = new Intl.NumberFormat("de-DE", {
+            style: "currency",
+            currency: "EUR",
+        }).format(outputValue/euroToday);
+    }
+
+    if (currencySelect1.value == "GBP") {
+        cashCalue = new Intl.NumberFormat("en-GB", {
+            style: "currency",
+            currency: "GBP",
+        }).format(outputValue/libraToday);
+    }
+
+    if (currencySelect1.value == "BTC") {
+        cashCalue = new Intl.NumberFormat("de-DE", {
+            style: "currency",
+            currency: "XBT",
+            minimumFractionDigits: 8 
+        }).format(outputValue/bitcoinToday);
+    }
+    
+}
+
+
 function formatInputAsValueClean() {
     inputCurrency.value = "";
+
+    // 2. Altera o placeholder com base na moeda de entrada selecionada
+    if (currencySelect1.value == "BRL") {
+        inputCurrency.placeholder = "R$ 10.000,00";
+    }
+    
+    if (currencySelect1.value == "USD") {
+        inputCurrency.placeholder = "$10,000.00";
+        
+    }
+    
+    if (currencySelect1.value == "EUR") {
+        inputCurrency.placeholder = "€10,000.00"; // Usando o formato en-US que você escolheu
+    }
+    
+    if (currencySelect1.value == "GBP") {
+        inputCurrency.placeholder = "£10,000.00";
+    }
+    
+    if (currencySelect1.value == "BTC") {
+        inputCurrency.placeholder = "XBT 0.00000000"; // Formato do Bitcoin com 8 casas
+    }
 }
 
 function formatInputAsValue(event) {
@@ -187,7 +251,7 @@ async function convertValues() {
 
         if (currencySelect.value == "EUR") {
             valueTodayCorrency() 
-            currencyValueConverted.innerHTML = new Intl.NumberFormat("de-DE", {
+            currencyValueConverted.innerHTML = new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "EUR"
             }).format(inputCurrencyValue * valueToday / euroToday)
@@ -240,6 +304,7 @@ async function convertValues() {
 }
 
 function changeCurrency() {
+    
     const currencyName1 = document.getElementById("currency-name1")
     const currencyName = document.getElementById("currency-name")
     const currencyImage1 = document.querySelector(".currency-img1")
@@ -252,11 +317,13 @@ function changeCurrency() {
         currency: "BRL"
     });
 
+        
     //Agora vamos editar as informações na tela
 
     if (currencySelect.value == "USD") {
+        outputValue  = dolarToday;
         
-        currencyName.innerHTML = `1 Dólar Americano = ${formatarReal.format(dolarToday)}`
+        currencyName.innerHTML = `1 Dólar Americano = ${comparisonValue(), cashCalue}`
         currencyImage.src = "./assets/img/estados-unidos.png"
     }
 
@@ -267,8 +334,9 @@ function changeCurrency() {
     }
 
     if (currencySelect.value == "EUR") {
+        outputValue  = euroToday;
 
-        currencyName.innerHTML = `1 Euro = ${formatarReal.format(euroToday)}`
+        currencyName.innerHTML = `1 Euro = ${comparisonValue(), cashCalue}`
         currencyImage.src = "./assets/img/euro.png"
     }
 
@@ -279,8 +347,9 @@ function changeCurrency() {
     }
 
     if (currencySelect.value == "GBP") {
+        outputValue  = libraToday;
 
-        currencyName.innerHTML = `1 Libra Esterlina = ${formatarReal.format(libraToday)}`
+        currencyName.innerHTML = `1 Libra Esterlina = ${comparisonValue(), cashCalue}`
         currencyImage.src = "./assets/img/libra.png"
     }
 
@@ -291,8 +360,9 @@ function changeCurrency() {
     }
 
     if (currencySelect.value == "BTC") {
+        outputValue  = bitcoinToday;
 
-        currencyName.innerHTML = `1 Bitcoin = ${formatarReal.format(bitcoinToday)}`
+        currencyName.innerHTML = `1 Bitcoin = ${comparisonValue(), cashCalue}`
         currencyImage.src = "./assets/img/bitcoin.png"
     }
 
@@ -303,8 +373,9 @@ function changeCurrency() {
     }
 
     if (currencySelect.value == "BRL") {
+        outputValue  = realToday;
 
-        currencyName.innerHTML = `1 Real = ${formatarReal.format(realToday)}`
+        currencyName.innerHTML = `1 Real = ${comparisonValue(), cashCalue}`
         currencyImage.src = "./assets/img/brasil.png"
     }
 
@@ -313,8 +384,7 @@ function changeCurrency() {
         currencyName1.innerHTML = `Real`
         currencyImage1.src = "./assets/img/brasil.png"
     }
-
-    
+      
 
 }
 
